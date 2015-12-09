@@ -12,5 +12,4 @@ Remote procedures:
   KBBW IDENTIFY USER
 
 Context menu options:
-  KBBW EHR CONTEXT MENU
-    Option menu text: ZZ KBBW EHR CONTEXT MENU
+  KBBW EHR CONTEXT MENU (Option menu text: ZZ KBBW EHR CONTEXT MENU)
