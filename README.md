@@ -1,4 +1,4 @@
-# vista-patient-ehr
+# VistA Patient EHR
 
 Web-based patient EHR for VistA
 
@@ -13,3 +13,9 @@ Remote procedures:
 
 Context menu options:
   KBBW EHR CONTEXT MENU (Option menu text: ZZ KBBW EHR CONTEXT MENU)
+
+Package parameters:
+  KBBW PEHR ENABLE
+
+Files:
+  KBBW EHR USER SETTINGS (11345001)
