@@ -43,7 +43,7 @@ PEHRENBL() ; Is the PEHR enabled?
  Q $$GET^XPAR("PKG","KBBW PEHR ENABLE",1,"Q")
  ;
 USERINFO(INFO) ; RPC call for basic user/patient info (KBBW IDENTIFY USER)
- ;               So pass parameter by reference
+ ;               Pass parameter by reference
  K INFO
  Q:'DUZ
  ;
