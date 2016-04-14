@@ -1,41 +1,31 @@
-KBBWPHW1 ; VEN/ARC - Patient EHR: Fileman Web 1 ; 2016-04-14 11:22
- ;;1.0;PEHR;
+KBBWPH4 ; VEN/ARC&POO: Paideia homework 4 ~ Fileman web ; 2016-04-13 14:45
+ ;;1.0;PEHR;;
  ;
  ;
-USERPT(html,FILTER) ;
- ;ven/arc;test;pseudo-function;messy;silent;sac;non-recursive
- if '$D(html) set html=$na(^TMP("pehrhtml",$J))
- kill @html
- ;
- new htmlTop,htmlBottom
- do HTMLTB^KBAIWEB(.htmlTop,.htmlBottom,"PEHR Test")
- merge @html=htmlTop
- ;
- new ien
- set ien=$G(FILTER("ien"))
- if ien="" set ien=1
- ;
- new fileArray
- do FMX^KBAIWEB("fileArray",11345001,ien)
- ;
- new tableArray
- set tableArray("HEADER",1)="User"
- set tableArray("HEADER",2)="Patient"
- set tableArray("TITLE")="File 11345001"
- set tableArray(1,1)=fileArray("KBBW_EHR_USER_SETTINGS","User")
- set tableArray(1,2)=fileArray("KBBW_EHR_USER_SETTINGS","Patient")
- ;
- do GENHTML2^KBAIUTIL(html,"tableArray")
- set @html@($O(@html@(""),-1)+1)=htmlBottom
- ;
- kill @html@(0)
- ;
- set HTTPRSP("mime")="text/html"
- ;
- quit
+UserPt(html,FILTER) ;
+ ;ven/arc;test;pseudo-function;messy;silent;sac?
+ I '$D(html) S html=$NA(^TMP("pehrhtml",$J))
+ K @html
+ N GTOP,GBOT
+ D HTMLTB^KBAIWEB(.GTOP,.GBOT,"PEHR Test")
+ M @html=GTOP
+ N ien S ien=$G(FILTER("ien"))
+ I ien="" S ien=1
+ N filearray,dataarray
+ D FMX^KBAIWEB("filearray",11345001,ien)
+ S dataarray("HEADER",1)="User"
+ S dataarray("HEADER",2)="Patient"
+ S dataarray("TITLE")="File 11345001"
+ S dataarray(1,1)=filearray("KBBW_EHR_USER_SETTINGS","User")
+ S dataarray(1,2)=filearray("KBBW_EHR_USER_SETTINGS","Patient")
+ D GENHTML2^KBAIUTIL(html,"dataarray")
+ S @html@($O(@html@(""),-1)+1)=GBOT
+ K @html@(0)
+ S HTTPRSP("mime")="text/html"
+ Q
  ;
 PTINFO(html,FILTER) ;
- ;ven/arc;test;pseudo-function;messy;silent;sac;non-recursive
+ ;ven/arc;test;pseudo-function;messy;silent;sac?
  K ^TMP("ALEXIS")
  M ^TMP("ALEXIS")=DUZ
  ;D DUZ^XUP(DUZ)
@@ -74,3 +64,4 @@ PTINFO(html,FILTER) ;
  Q
  ;
 EOR ; End of routine KBBWPH4
+
