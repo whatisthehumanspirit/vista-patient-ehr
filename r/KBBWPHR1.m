@@ -16,10 +16,9 @@ STARTUP ; Runs once per routine
  Q
  ;
 SETUP ; Runs once per test
- Q:'
+ Q
  ;
 TEARDOWN ; Runs once per test
- ;
  I PEHRENBL]"" D
  . D CHG^XPAR("PKG","KBBW PEHR ENABLE",1,PEHRENBL,.ERR)
  Q
