@@ -11,7 +11,7 @@ STARTUP ; Runs once per routine
  K PEHRENBL
  N list,error
  D ENVAL^XPAR(.list,"KBBW PEHR ENABLE",1,.error)
- I list>0 S PEHRENBL=$$PEHRENBL
+ I list>0 S PEHRENBL=$$PehrEnabled
  E  S PEHRENBL=""
  Q
  ;
