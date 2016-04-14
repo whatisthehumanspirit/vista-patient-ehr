@@ -3,7 +3,7 @@ KBBWPHR1 ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
  ;;App version;App name;Patch #s w routine changes;App release date;
  ;
  ; Unit tests require that the parameter KBBW PEHR ENABLE exists
- I $T(EN^%ut)'="" D EN^%ut("KBBWRPC",2)
+ I $T(EN^%ut)'="" D EN^%ut("KBBWPHR1",2)
  Q
  ;
 STARTUP ; Runs once per routine
