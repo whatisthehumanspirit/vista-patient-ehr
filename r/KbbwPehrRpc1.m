@@ -1,4 +1,4 @@
-KBBWPHR1 ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
+KbbwPehrRpc1 ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
  ;;1.0;PEHR;
  ;;App version;App name;Patch #s w routine changes;App release date;
  ;
@@ -83,4 +83,4 @@ PtInfo(USER) ;
  S PTNAME=$$GET1^DIQ(2,PTDFN,.01,"E")
  Q PTDFN_U_PTNAME
  ;
-EOR ; End of routine KBBWRPC
+EOR ; End of routine KbbwPehrRpc1
