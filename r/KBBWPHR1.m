@@ -1,5 +1,6 @@
-KBBWRPC ; VEN/ARC - PATIENT EHR RPC ; 11/5/2015
- ;;1.0;KBBW PEHR;**LOCAL**;NOV 5, 2015
+KBBWPHR1 ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
+ ;;1.0;PEHR;
+ ;;App version;App name;Patch #s w routine changes;App release date;
  ;
  ; Unit tests require that the parameter KBBW PEHR ENABLE exists
  I $T(EN^%ut)'="" D EN^%ut("KBBWRPC",2)
@@ -15,7 +16,7 @@ STARTUP ; Runs once per routine
  Q
  ;
 SETUP ; Runs once per test
- Q
+ Q:'
  ;
 TEARDOWN ; Runs once per test
  ;
@@ -29,20 +30,20 @@ SHUTDOWN ; Runs once per routine. Probably won't use this.
 ST1 ; @TEST Parameter set to "YES"
  ;
  D CHG^XPAR("PKG","KBBW PEHR ENABLE",1,1,.ERR)
- D CHKTF^%ut($$PEHRENBL)
+ D CHKTF^%ut($$PehrEnabled)
  Q
  ;
 ST2 ; @TEST Parameter set to "NO"
  ;
  D CHG^XPAR("PKG","KBBW PEHR ENABLE",1,0,.ERR)
- D CHKTF^%ut('$$PEHRENBL)
- Q
+ D CHKTF^%ut('$$PehrEnabled)
+ Q 
  ;
-PEHRENBL() ; Is the PEHR enabled?
+PehrEnabled() ; Is the PEHR enabled?
  ;
  Q $$GET^XPAR("PKG","KBBW PEHR ENABLE",1,"Q")
  ;
-USERINFO(INFO) ; RPC call for basic user/patient info (KBBW IDENTIFY USER)
+UserInfo(INFO) ; RPC call for basic user/patient info (KBBW IDENTIFY USER)
  ;               Pass parameter by reference
  K INFO
  Q:'DUZ
@@ -61,16 +62,16 @@ USERINFO(INFO) ; RPC call for basic user/patient info (KBBW IDENTIFY USER)
  ;
  ; The user has already authenticated, so no harm in relaying user name
  ; The next question is whether the service is active (boolean)
- S INFO=INFO_U_$$PEHRENBL
+ S INFO=INFO_U_$$PehrEnabled
  ;
  ; If the PEHR service is active, return DFN and name of patient
  ; associated with the user
  I $P(INFO,U,3) D
- S INFO=INFO_U_$$PTINFO(DUZ)
+ S INFO=INFO_U_$$PtInfo(DUZ)
  ;
  Q
  ;
-PTINFO(USER) ;
+PtInfo(USER) ;
  ;
  Q:'$G(USER) ""
  ;
