@@ -51,7 +51,7 @@ PtInfo(html,FILTER) ;
  set U="^"
  new info,dfn
  do UserInfo^KbbwPehrRpc(.info)
- set dfn=+$(info,U,4)
+ set dfn=+$p(info,U,4)
  ;
  new fileArray
  do FMX^KBAIWEB("fileArray",2,dfn)
