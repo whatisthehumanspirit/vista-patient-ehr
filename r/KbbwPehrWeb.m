@@ -1,5 +1,5 @@
-KbbwPehrWeb1 ; VEN/ARC - Patient EHR: Fileman Web 1 ; 2016-04-14 11:22
- ;;1.0;PEHR;
+KbbwPehrWeb ; VEN/ARC - Patient EHR: Fileman Web 1 ; 2016-04-14 11:22
+ ;;1.0;Patient EHR;
  ;
  ;
 UserPt(html,FILTER) ;
@@ -50,7 +50,7 @@ PtInfo(html,FILTER) ;
  ;
  set U="^"
  new info,dfn
- do UserInfo^KBBWPHR1(.info)
+ do UserInfo^KbbwPehrRpc(.info)
  set dfn=+$(info,U,4)
  ;
  new fileArray
@@ -74,4 +74,4 @@ PtInfo(html,FILTER) ;
  ;
  quit
  ;
-EOR ; End of routine KbbwPehrWeb1
+EOR ; End of routine KbbwPehrWeb
