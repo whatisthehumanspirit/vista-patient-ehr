@@ -2,7 +2,7 @@ KBBWPH4 ; VEN/ARC&POO: Paideia homework 4 ~ Fileman web ; 2016-04-13 14:45
  ;;1.0;PEHR;;
  ;
  ;
-UserPt(html,FILTER) ;
+USERPT(html,FILTER) ;
  ;ven/arc;test;pseudo-function;messy;silent;sac?
  I '$D(html) S html=$NA(^TMP("pehrhtml",$J))
  K @html

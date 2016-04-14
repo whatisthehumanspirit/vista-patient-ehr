@@ -2,9 +2,9 @@ KBBWPHW1 ; VEN/ARC - Patient EHR: Fileman Web 1 ; 2016-04-14 11:22
  ;;1.0;PEHR;
  ;
  ;
-USERPT(html,FILTER) ;
+UserPt(html,FILTER) ;
  ;ven/arc;test;pseudo-function;messy;silent;sac;non-recursive
- if '$D(html) set html=$na(^TMP("pehrhtml",$J))
+ if '$D(html) set html=$NA(^TMP("pehrhtml",$J))
  kill @html
  ;
  new htmlTop,htmlBottom
@@ -73,4 +73,4 @@ PTINFO(html,FILTER) ;
  S HTTPRSP("mime")="text/html"
  Q
  ;
-EOR ; End of routine KBBWPH4
+EOR ; End of routine KBBWPHW1
