@@ -5,7 +5,7 @@ KbbwPehrWeb ; VEN/ARC - Patient EHR: Fileman Web 1 ; 2016-04-14 11:22
 UserPt(html,FILTER) ;
  ;ven/arc;test;pseudo-function;messy;silent;sac;non-recursive
  ;
- if '$d(html) set html=$na(^TMP("pehrhtml",$J))
+ if '$d(html) set html=$na(^TMP("PehrHtml",$j))
  kill @html
  ;
  new htmlTop,htmlBottom
@@ -38,7 +38,11 @@ UserPt(html,FILTER) ;
 PtInfo(html,FILTER) ;
  ;ven/arc;test;pseudo-function;messy;silent;sac;non-recursive
  ;
- if '$d(html) set html=$na(^TMP("pehrhtml",$J))
+ ; Debug disappearing DUZ
+ k ^TMP("PehrDuz")
+ m ^TMP("PehrDuz",$j)=DUZ
+ ;
+ if '$d(html) set html=$na(^TMP("PehrHtml",$j))
  kill @html
  ;
  new htmlTop,htmlBottom
