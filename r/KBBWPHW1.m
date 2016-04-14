@@ -4,7 +4,7 @@ KBBWPHW1 ; VEN/ARC - Patient EHR: Fileman Web 1 ; 2016-04-14 11:22
  ;
 UserPt(html,FILTER) ;
  ;ven/arc;test;pseudo-function;messy;silent;sac;non-recursive
- if '$D(html) set html=$NA(^TMP("pehrhtml",$J))
+ if '$D(html) set html=$na(^TMP("pehrhtml",$J))
  kill @html
  ;
  new htmlTop,htmlBottom
