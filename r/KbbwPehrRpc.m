@@ -1,55 +1,66 @@
 KbbwPehrRpc ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
  ;;1.0;Patient EHR;
- ;;App version;App name;Patch #s w routine changes;App release date;
+ ;;App ver;App name;Patch #s w changes to routine;App release date;
  ;
  ;
  ; Unit tests require that the parameter KBBW PEHR ENABLE exists
- I $T(EN^%ut)'="" D EN^%ut("KBBWPHR1",2)
- Q
+ if $t(EN^%ut)'="" do EN^%ut("KbbwPehrRpc",2)
+ quit
  ;
 STARTUP ; Runs once per routine
- ; ZEXCEPT: PEHRENBL
- K PEHRENBL
- N list,error
- D ENVAL^XPAR(.list,"KBBW PEHR ENABLE",1,.error)
- I list>0 S PEHRENBL=$$PehrEnabled
- E  S PEHRENBL=""
- Q
+ ;
+ ; ZEXCEPT: pehrEnabled
+ kill pehrEnabled
+ new list
+ do ENVAL^XPAR(.list,"KBBW PEHR ENABLE",1,.error)
+ if list>0 S pehrEnabled=$$PehrEnabled
+ else  set pehrEnabled=""
+ ;
+ quit
  ;
 SETUP ; Runs once per test
- Q
+ ;
+ quit
  ;
 TEARDOWN ; Runs once per test
- I PEHRENBL]"" D
- . D CHG^XPAR("PKG","KBBW PEHR ENABLE",1,PEHRENBL,.ERR)
- Q
+ ;
+ if pehrEnabled]"" do
+ . do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,pehrEnabled,.error)
+ ;
+ quit
  ;
 SHUTDOWN ; Runs once per routine. Probably won't use this.
- Q
  ;
-ST1 ; @TEST Parameter set to "YES"
+ quit
  ;
- D CHG^XPAR("PKG","KBBW PEHR ENABLE",1,1,.ERR)
- D CHKTF^%ut($$PehrEnabled)
- Q
+Status1 ; @TEST Parameter set to "YES"
  ;
-ST2 ; @TEST Parameter set to "NO"
+ do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,1,.error)
+ do CHKTF^%ut($$PehrEnabled)
  ;
- D CHG^XPAR("PKG","KBBW PEHR ENABLE",1,0,.ERR)
- D CHKTF^%ut('$$PehrEnabled)
- Q 
+ quit
+ ;
+Status2 ; @TEST Parameter set to "NO"
+ ;
+ do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,0,.error)
+ do CHKTF^%ut('$$PehrEnabled)
+ ;
+ quit 
  ;
 PehrEnabled() ; Is the PEHR enabled?
  ;
- Q $$GET^XPAR("PKG","KBBW PEHR ENABLE",1,"Q")
+ quit $$GET^XPAR("PKG","KBBW PEHR ENABLE",1,"Q")
  ;
-UserInfo(INFO) ; RPC call for basic user/patient info (KBBW IDENTIFY USER)
- ;               Pass parameter by reference
- K INFO
- Q:'DUZ
+UserInfo(info) ; UserInfo(.info)
+ ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
+ ;
+ ; RPC call for basic user/patient info
+ ;
+ kill info
+ quit:'DUZ
  ;
  ; Return DUZ and user name
- S INFO=DUZ_U_$P($G(^VA(200,DUZ,0)),U)
+ set info=DUZ_U_$p($g(^VA(200,DUZ,0)),U)
  ;
  ; Manually check for access to a security key
  ; Pointless in this context
@@ -62,25 +73,27 @@ UserInfo(INFO) ; RPC call for basic user/patient info (KBBW IDENTIFY USER)
  ;
  ; The user has already authenticated, so no harm in relaying user name
  ; The next question is whether the service is active (boolean)
- S INFO=INFO_U_$$PehrEnabled
+ set info=info_U_$$PehrEnabled
  ;
  ; If the PEHR service is active, return DFN and name of patient
  ; associated with the user
- I $P(INFO,U,3) D
- S INFO=INFO_U_$$PtInfo(DUZ)
+ if $p(info,U,3) do
+ set info=info_U_$$PtInfo(DUZ)
  ;
- Q
+ quit
  ;
-PtInfo(USER) ;
+PtInfo(duz) ;
+ ;ven/arc;test;function;clean;silent;non-sac;non-recursive
  ;
- Q:'$G(USER) ""
+ quit:'$get(duz) ""
  ;
- N USERIEN,PTDFN,PTNAME
- S USERIEN=+$O(^KBBW(11345001,"B",USER,0))
- ; PTDFN will be null if user doesn't have a record in KBBW EHR USER SETTINGS
- S PTDFN=+$P(^KBBW(11345001,USERIEN,0),U,2)
+ new ien,dfn,ptName
+ set ien=+$o(^KBBW(11345001,"B",duz,0))
+ ; dfn will be null if user doesn't have a record in KBBW EHR USER SETTINGS
+ set dfn=+$p(^KBBW(11345001,ien,0),U,2)
  ; Use Fileman call since I don't own this file
- S PTNAME=$$GET1^DIQ(2,PTDFN,.01,"E")
- Q PTDFN_U_PTNAME
+ set ptName=$$GET1^DIQ(2,dfn,.01,"E")
  ;
-EOR ; End of routine KbbwPehrRpc
+ quit dfn_U_ptName
+ ;
+eor ; End of routine KbbwPehrRpc
