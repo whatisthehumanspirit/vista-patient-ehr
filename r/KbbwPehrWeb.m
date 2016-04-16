@@ -42,15 +42,17 @@ PtInfo(html,FILTER) ;
  k ^TMP("PehrDuz")
  m ^TMP("PehrDuz",$j)=DUZ
  ;
- if '$d(html) set html=$na(^TMP("PehrHtml",$j))
+ set html=$na(^TMP("PehrHtml",$j))
  kill @html
  ;
  new htmlTop,htmlBottom
  do HTMLTB^KBAIWEB(.htmlTop,.htmlBottom,"PEHR Test")
  merge @html=htmlTop
  ;
- set DUZ=$g(FILTER("duz"))
- if DUZ="" set DUZ=1
+ ;set DUZ=$g(FILTER("duz"))
+ ;if DUZ="" set DUZ=1
+ ;
+ do ^%ZTER
  ;
  set U="^"
  new info,dfn
