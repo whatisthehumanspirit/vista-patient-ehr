@@ -1,6 +1,6 @@
 KbbwPehrRpc ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
  ;;1.0;Patient EHR;
- ;;App ver;App name;Patch #s w changes to routine;App release date;
+ ;;App ver;App name;Patch #s w changes to routine;App release date;KIDS build #?
  ;
  ;
  ; Unit tests require that the parameter KBBW PEHR ENABLE exists
