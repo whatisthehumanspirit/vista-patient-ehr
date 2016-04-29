@@ -19,3 +19,42 @@ AUTHPT(USRAUTH,USRALLOW) ;
  D UPDATE^DIE("","FDA(3)")
  Q
  ;
+ ;
+ ; Pull patient lab data
+ ; Call as D PTLABS^KBAPTMP(DFN,ARRAY,CNT)
+ ; ENTER
+ ;    DFN    = IEN of patient in file 2
+ ;    ARRAY  = Name of the array
+ ;    TOTAL  = Number of tests to return (default = 20)
+ ; RETURNS
+ ;    ARRAY  = array with information on tests 
+ ;             Tests will be in newest to oldest order
+PTLABS(DFN,LABSARR,TOTAL) ;
+ K @LABSARR
+ Q:'$G(DFN)
+ S:(+$G(TOTAL)=0) TOTAL=20
+ ; Quit if patient has not had any lab tests
+ Q:'$G(^DPT(DFN,"LR"))
+ N LRDFN S LRDFN=$G(^DPT(DFN,"LR"))
+ Q:'$P($G(^LR(LRDFN,0)),"^",3)
+ ; Let's return the 10 most recent chemistry tests info
+ N CNT,LRIDT,LRUID,NODE,NODE0,LRAA,LRAD,LRAN,LRTSTIEN,LRTSTN,LRTSTD
+ S (CNT,LRIDT)=0
+ F  S LRIDT=$O(^LR(LRDFN,"CH",LRIDT)) Q:'LRIDT  D  Q:CNT>=TOTAL
+ . S LRUID=$P($G(^LR(LRDFN,"CH",LRIDT,"ORU")),"^") 
+ . Q:LRUID=""
+ . S CNT=CNT+1
+ . S NODE0=$G(^LR(LRDFN,"CH",LRIDT,0))
+ . S @LABSARR@(CNT,"LRUID")=$G(LRUID)
+ . S @LABSARR@(CNT,"DATE/TIME")=$$FMTE^XLFDT(+NODE0)
+ . S @LABSARR@(CNT,"SPECIMEN")=$$GET1^DIQ(61,$P(NODE0,"^",5),.01,"E")
+ . S NODE=$NA(^LRO(68,"C",LRUID)),NODE=$Q(@NODE)
+ . S LRAA=$QS(NODE,4)
+ . S LRAD=$QS(NODE,5)
+ . S LRAN=$QS(NODE,6)
+ . S LRTSTIEN=$O(^LRO(68,LRAA,1,LRAD,1,LRAN,4,0))
+ . S LRTSTN=$$GET1^DIQ(60,LRTSTIEN,.01)
+ . S LRTSTD=$P($$GET1^DIQ(60,LRTSTIEN,5),";",2)
+ . S @LABSARR@(CNT,"TEST")=LRTSTN
+ . S @LABSARR@(CNT,"RESULT")=$P($G(^LR(LRDFN,"CH",LRIDT,LRTSTD)),"^")
+ Q

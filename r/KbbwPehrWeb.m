@@ -23,8 +23,8 @@ UserPt(html,FILTER) ;
  set tableArray("HEADER",1)="User"
  set tableArray("HEADER",2)="Patient"
  set tableArray("TITLE")="File 11345001"
- set tableArray(1,1)=fileArray("KBBW_EHR_USER_SETTINGS","User")
- set tableArray(1,2)=fileArray("KBBW_EHR_USER_SETTINGS","Patient")
+ set tableArray(1,1)=fileArray("KBBW_PEHR_User_Settings","User")
+ set tableArray(1,2)=fileArray("KBBW_PEHR_User_Settings","Patient")
  ;
  do GENHTML2^KBAIUTIL(html,"tableArray")
  set @html@($o(@html@(""),-1)+1)=htmlBottom
@@ -34,6 +34,41 @@ UserPt(html,FILTER) ;
  set HTTPRSP("mime")="text/html"
  ;
  quit
+ ;
+ ;
+Patients(html,FILTER) ;
+ ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
+ ;
+ ;
+ set html=$na(^TMP("PehrHtml",$j))
+ kill @html
+ ;
+ new htmlTop,htmlBottom
+ do HTMLTB^KBAIWEB(.htmlTop,.htmlBottom,"PEHR Test")
+ merge @html=htmlTop
+ ;
+ set U="^"
+ new info,dfn
+ do UserSettings^KbbwPehrRpc(.info)
+ set dfn=+$p(info,U,4)
+ ;
+ new fileArray
+ do FMX^KBAIWEB("fileArray",2,dfn)
+ ;
+ new tableArray
+ set tableArray("HEADER",1)="Name"
+ set tableArray("TITLE")="Authorized Patients"
+ set tableArray(1,1)=fileArray("PATIENT","NAME")
+ ;
+ do GENHTML2^KBAIUTIL(html,"tableArray")
+ set @html@($o(@html@(""),-1)+1)=htmlBottom
+ ;
+ kill @html@(0)
+ ;
+ set HTTPRSP("mime")="text/html"
+ ;
+ quit
+ ;
  ;
 PtInfo(html,FILTER) ;
  ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
@@ -56,7 +91,7 @@ PtInfo(html,FILTER) ;
  ;
  set U="^"
  new info,dfn
- do UserInfo^KbbwPehrRpc(.info)
+ do UserSettings^KbbwPehrRpc(.info)
  set dfn=+$p(info,U,4)
  ;
  new fileArray
@@ -79,5 +114,6 @@ PtInfo(html,FILTER) ;
  set HTTPRSP("mime")="text/html"
  ;
  quit
+ ;
  ;
 eor ; End of routine KbbwPehrWeb

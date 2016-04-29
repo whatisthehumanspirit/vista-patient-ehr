@@ -51,7 +51,7 @@ PehrEnabled() ; Is the PEHR enabled?
  ;
  quit $$GET^XPAR("PKG","KBBW PEHR ENABLE",1,"Q")
  ;
-UserInfo(info) ; UserInfo(.info)
+UserSettings(info) ; UserInfo(.info)
  ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
  ;
  ; RPC call for basic user/patient info
@@ -78,11 +78,11 @@ UserInfo(info) ; UserInfo(.info)
  ; If the PEHR service is active, return DFN and name of patient
  ; associated with the user
  if $p(info,U,3) do
- set info=info_U_$$PtInfo(DUZ)
+ . set info=info_U_$$UserPatient(DUZ)
  ;
  quit
  ;
-PtInfo(duz) ;
+UserPatient(duz) ;
  ;ven/arc;test;function;clean;silent;non-sac;non-recursive
  ;
  quit:'$get(duz) ""
