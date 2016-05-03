@@ -53,7 +53,7 @@ PehrEnabled() ; Is the PEHR enabled?
  ;
 UserSettings(info) ; UserInfo(.info)
  ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
- ;ven/arc;test/production;procedure/pseudo-function/function;clean/messy;silent/report/dialogue;recursive/non-sac;non-recursive
+ ;ven/arc;test/production;procedure/pseudo-function/function;clean/messy;silent/report/dialogue;sac/non-sac;recursive/non-recursive
  ;
  ; RPC call for basic user/patient info
  ;
