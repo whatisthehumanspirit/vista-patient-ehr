@@ -2,7 +2,6 @@ KbbwPehrRpc ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
  ;;1.0;Patient EHR;
  ;;App ver;App name;Patch #s w changes to routine;App release date;KIDS build #?
  ;
- ;
  ; Unit tests require that the parameter KBBW PEHR ENABLE exists
  if $t(EN^%ut)'="" do EN^%ut("KbbwPehrRpc",2)
  quit
@@ -51,10 +50,11 @@ PehrEnabled() ; Is the PEHR enabled?
  ;
  quit $$GET^XPAR("PKG","KBBW PEHR ENABLE",1,"Q")
  ;
-UserSettings(info) ; UserInfo(.info)
+UserSettings(info) ;
  ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
  ;ven/arc;test/production;procedure/pseudo-function/function;clean/messy;silent/report/dialogue;sac/non-sac;recursive/non-recursive
  ;
+ ; UserInfo(.info)
  ; RPC call for basic user/patient info
  ;
  kill info
@@ -90,11 +90,18 @@ UserPatient(duz) ;
  ;
  new ien,dfn,ptName
  set ien=+$o(^KBBW(11345001,"B",duz,0))
- ; dfn will be null if user doesn't have a record in KBBW EHR USER SETTINGS
- set dfn=+$p(^KBBW(11345001,ien,0),U,2)
+ ; dfn will be null if user doesn't have a record in KBBW PEHR User Settings
+ set dfn=$p(^KBBW(11345001,ien,0),U,2)
  ; Use Fileman call since I don't own this file
- set ptName=$$GET1^DIQ(2,dfn,.01,"E")
+ set ptName=$$GET1^DIQ(2,dfn,.01)
  ;
  quit dfn_U_ptName
+ ;
+ ; The following sub-routines are not intended for use.
+ ; They are intended to test and document DBS API calls.
+ ;
+UserName(iens) ;
+ ;
+ quit $$GET1^DIQ(11345001,iens,.01)
  ;
 eor ; End of routine KbbwPehrRpc
