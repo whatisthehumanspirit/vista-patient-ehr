@@ -104,4 +104,25 @@ UserName(iens) ;
  ;
  quit $$GET1^DIQ(11345001,iens,.01)
  ;
+FirstAuthUser(ien) ;
+ ; Returns the first other user authorized by the user identified with the IEN
+ ; to view their patient records
+ ;
+ new iens
+ set iens="1,"_ien_","
+ ;
+ quit $$GET1^DIQ(11345001.01,iens,.01)
+ ;
+FirstAuthUsers(ien)
+ ; Calling this procedure in an appropriate loop would produce a Filer Data
+ ; Array, named authorizedUsers, containing the names of the first other user
+ ; identified with the IEN to view the patient records of each user
+ ;
+ new iens
+ set iens="1,"_ien_","
+ ;
+ do GETS^DIQ(11345001.01,iens,.01,,"authorizedUsers")
+ ;
+ quit
+ ;
 eor ; End of routine KbbwPehrRpc
