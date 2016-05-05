@@ -59,6 +59,7 @@ UserSettings(info) ;
  ;
  kill info
  quit:'DUZ
+ if 'DUZ quit:$Q "DUZ is not set" quit
  ;
  ; Return DUZ and user name
  set info=DUZ_U_$p($g(^VA(200,DUZ,0)),U)
@@ -81,7 +82,7 @@ UserSettings(info) ;
  if $p(info,U,3) do
  . set info=info_U_$$UserPatient(DUZ)
  ;
- quit
+ quit:$Q info quit
  ;
 UserPatient(duz) ;
  ;ven/arc;test;function;clean;silent;non-sac;non-recursive
