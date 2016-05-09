@@ -1,4 +1,4 @@
-KbbwPehrRpc ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
+KbbwPehr ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
  ;;1.0;Patient EHR;
  ;;App ver;App name;Patch #s w changes to routine;App release date;KIDS build #?
  ;
@@ -50,19 +50,22 @@ PehrEnabled() ; Is the PEHR enabled?
  ;
  quit $$GET^XPAR("PKG","KBBW PEHR ENABLE",1,"Q")
  ;
-UserSettings(info) ;
+UserSettings(requestDuz) ;
  ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
  ;ven/arc;test/production;procedure/pseudo-function/function;clean/messy;silent/report/dialogue;sac/non-sac;recursive/non-recursive
  ;
  ; UserInfo(.info)
  ; RPC call for basic user/patient info
  ;
- kill info
- quit:'DUZ
- if 'DUZ quit:$Q "DUZ is not set" quit
+ set U="^"
  ;
- ; Return DUZ and user name
- set info=DUZ_U_$p($g(^VA(200,DUZ,0)),U)
+ new workingDuz
+ set workingDuz=$s($g(requestDuz):requestDuz,$g(DUZ):DUZ,1:0)
+ quit:'workingDuz "DUZ not set or specified"
+ ;
+ ; Supply DUZ and user name
+ new info
+ set info=workingDuz_U_$p($g(^VA(200,workingDuz,0)),U)
  ;
  ; Manually check for access to a security key
  ; Pointless in this context
@@ -71,23 +74,26 @@ UserSettings(info) ;
  ;S SECKEY=""
  ;S KEYIEN=+$O(^DIC(19.1,"B","KBBWFA",0))
  ; Establish boolean for access to key that allows this RPC
- ;S:KEYIEN SECKEY=$D(^VA(200,DUZ,51,KEYIEN,0))
+ ;S:KEYIEN SECKEY=$D(^VA(200,workingDuz,51,KEYIEN,0))
  ;
- ; The user has already authenticated, so no harm in relaying user name
  ; The next question is whether the service is active (boolean)
  set info=info_U_$$PehrEnabled
  ;
  ; If the PEHR service is active, return DFN and name of patient
- ; associated with the user
+ ; associated with the user and the default view
  if $p(info,U,3) do
- . set info=info_U_$$UserPatient(DUZ)
+ . set info=info_U_$$UserPatient(workingDuz)
+ .;
+ . new iens
+ . set iens=$o(^KBBW(11345001,"B",workingDuz,0))
+ . set info=info_U_$$GET1^DIQ(11345001,iens,.03)
  ;
- quit:$Q info quit
+ quit info
  ;
 UserPatient(duz) ;
  ;ven/arc;test;function;clean;silent;non-sac;non-recursive
  ;
- quit:'$get(duz) ""
+ quit:'$g(duz) ""
  ;
  new ien,dfn,ptName
  set ien=+$o(^KBBW(11345001,"B",duz,0))
@@ -107,7 +113,7 @@ UserName(iens) ;
  ;
 FirstAuthUser(ien) ;
  ; Returns the first other user authorized by the user identified with the IEN
- ; to view their patient records
+ ; to view t$o(^KBBW(11345001,"B",duz,0))heir patient records
  ;
  new iens
  set iens="1,"_ien_","
@@ -126,4 +132,4 @@ FirstAuthUsers(ien)
  ;
  quit
  ;
-eor ; End of routine KbbwPehrRpc
+eor ; End of routine KbbwPehr
