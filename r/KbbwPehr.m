@@ -57,7 +57,7 @@ UserSettings(requestDuz) ;
  ; UserInfo(.info)
  ; RPC call for basic user/patient info
  ;
- set U="^"
+ if '$data(U) set U="^"
  ;
  new workingDuz
  set workingDuz=$s($g(requestDuz):requestDuz,$g(DUZ):DUZ,1:0)
@@ -113,7 +113,7 @@ UserName(iens) ;
  ;
 FirstAuthUser(ien) ;
  ; Returns the first other user authorized by the user identified with the IEN
- ; to view t$o(^KBBW(11345001,"B",duz,0))heir patient records
+ ; to view their patient records
  ;
  new iens
  set iens="1,"_ien_","
