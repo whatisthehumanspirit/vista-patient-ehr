@@ -24,7 +24,7 @@ SETUP ; Runs once per test
 TEARDOWN ; Runs once per test
  ;
  if pehrEnabled]"" do
- . do CHG^XPAR("ALL","KBBW PEHR ENABLE",1,pehrEnabled,.error)
+ . do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,pehrEnabled,.error)
  ;
  quit
  ;
@@ -34,14 +34,14 @@ SHUTDOWN ; Runs once per routine. Probably won't use this.
  ;
 Status1 ; @TEST Parameter set to "YES"
  ;
- do CHG^XPAR("ALL","KBBW PEHR ENABLE",1,1,.error)
+ do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,1,.error)
  do CHKTF^%ut($$PehrEnabled)
  ;
  quit
  ;
 Status2 ; @TEST Parameter set to "NO"
  ;
- do CHG^XPAR("ALL","KBBW PEHR ENABLE",1,0,.error)
+ do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,0,.error)
  do CHKTF^%ut('$$PehrEnabled)
  ;
  quit 
