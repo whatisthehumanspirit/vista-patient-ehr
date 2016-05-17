@@ -3,7 +3,7 @@ KbbwPehr ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
  ;;App ver;App name;Patch #s w changes to routine;App release date;KIDS build #?
  ;
  ; Unit tests require that the parameter KBBW PEHR ENABLE exists
- if $t(EN^%ut)'="" do EN^%ut("KbbwPehrRpc",2)
+ if $t(EN^%ut)'="" do EN^%ut("KbbwPehr",2)
  quit
  ;
 STARTUP ; Runs once per routine
@@ -24,7 +24,7 @@ SETUP ; Runs once per test
 TEARDOWN ; Runs once per test
  ;
  if pehrEnabled]"" do
- . do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,pehrEnabled,.error)
+ . do CHG^XPAR("ALL","KBBW PEHR ENABLE",1,pehrEnabled,.error)
  ;
  quit
  ;
@@ -34,21 +34,21 @@ SHUTDOWN ; Runs once per routine. Probably won't use this.
  ;
 Status1 ; @TEST Parameter set to "YES"
  ;
- do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,1,.error)
+ do CHG^XPAR("ALL","KBBW PEHR ENABLE",1,1,.error)
  do CHKTF^%ut($$PehrEnabled)
  ;
  quit
  ;
 Status2 ; @TEST Parameter set to "NO"
  ;
- do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,0,.error)
+ do CHG^XPAR("ALL","KBBW PEHR ENABLE",1,0,.error)
  do CHKTF^%ut('$$PehrEnabled)
  ;
  quit 
  ;
 PehrEnabled() ; Is the PEHR enabled?
  ;
- quit $$GET^XPAR("PKG","KBBW PEHR ENABLE",1,"Q")
+ quit $$GET^XPAR("ALL","KBBW PEHR ENABLE",1,"Q")
  ;
 UserSettings(requestDuz) ;
  ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
