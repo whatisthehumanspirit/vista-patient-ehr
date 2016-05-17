@@ -65,7 +65,7 @@ UserSettings(requestDuz) ;
  ;
  ; Supply DUZ and user name
  new info
- set info=workingDuz_U_$p($g(^VA(200,workingDuz,0)),U)
+ set info=$p($g(^VA(200,workingDuz,0)),U)
  ;
  ; Manually check for access to a security key
  ; Pointless in this context
@@ -81,7 +81,7 @@ UserSettings(requestDuz) ;
  ;
  ; If the PEHR service is active, return DFN and name of patient
  ; associated with the user and the default view
- if $p(info,U,3) do
+ if $p(info,U,2) do
  . set info=info_U_$$UserPatient(workingDuz)
  .;
  . new iens
@@ -112,7 +112,7 @@ UserName(iens) ;
  quit $$GET1^DIQ(11345001,iens,.01)
  ;
 FirstAuthUser(ien) ;
- ; Returns the first other user authorized by the user identified with the IEN
+ ; Returns the first other user authorized by this user identified with the IEN
  ; to view their patient records
  ;
  new iens
@@ -120,15 +120,20 @@ FirstAuthUser(ien) ;
  ;
  quit $$GET1^DIQ(11345001.01,iens,.01)
  ;
-FirstAuthUsers(ien)
- ; Calling this procedure in an appropriate loop would produce a Filer Data
- ; Array, named authorizedUsers, containing the names of the first other user
- ; identified with the IEN to view the patient records of each user
+UserAndPatient(ien)
+ ; Returns a user and patient in an FDA
  ;
  new iens
- set iens="1,"_ien_","
+ set iens=ien_","
  ;
- do GETS^DIQ(11345001.01,iens,.01,,"authorizedUsers")
+ do GETS^DIQ(11345001,iens,.01,,"people")
+ do GETS^DIQ(11345001,iens,.02,,"people")
+ ;
+ quit
+ ;
+ListAllUsers
+ ; Returns a list of all users sorted by name
+ do LIST^DIC(11345001,,"@;.01;.02;.03","P",,,,,,,"users","error")
  ;
  quit
  ;
