@@ -9,7 +9,7 @@ KbbwPehr ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
 STARTUP ; Runs once per routine
  ;
  ; ZEXCEPT: pehrEnabled
- kill pehrEnabled
+ kill pehrEnabled,error
  new list
  do ENVAL^XPAR(.list,"KBBW PEHR ENABLE",1,.error)
  if list>0 S pehrEnabled=$$PehrEnabled
