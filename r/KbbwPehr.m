@@ -101,18 +101,40 @@ UserPatient(duz) ;
  ;
  quit dfn_U_ptName
  ;
-AddUser(newPerson,patient) ;
+AddUser(person,patient) ;
  ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
  ;
- ; newPerson & patient must be strings -- external values
  ; Returns a boolean value for success
  ;
- set record(11345001,"+1,",.01)=newPerson
+ ; Parameters:
+ ; newPerson & patient must be strings -- external values
+ ;
+ set record(11345001,"+1,",.01)=person
  set record(11345001,"+1,",.02)=patient
  do UPDATE^DIE("E","record")
  ;
  quit:'$d(^TMP("DIERR",$J)) 1
  quit:$d(^TMP("DIERR",$J)) 0
+ ;
+AddAuthUser(person,authUser) ;
+ ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
+ ;
+ ; Returns a boolean value for success
+ ;
+ ; Parameters:
+ ; newPerson & newAuthUser must be strings -- external values
+ ;
+ new userIen
+ set userIen=$$FIND1^DIC(11345001,,"B",person,,,)
+ quit:'userIen 0
+ ;
+ new authUserIen,duz
+ set authUserIen=$$FIND1^DIC(11345001,,"B",authUser,,,)
+ quit:'authUserIen 0
+ set duz=$p(^KBBW(11345001,ien,0),U,2)
+ ;
+ set record(11345001.01,"+1,"_userIen_",",.01)=duz
+ do UPDATE^DIE(,"record")
  ;
  ; The following sub-routines are not intended for use.
  ; They are intended to test and document DBS API calls.
