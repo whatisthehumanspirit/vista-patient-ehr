@@ -44,18 +44,15 @@ Status2 ; @TEST Parameter set to "NO"
  do CHG^XPAR("PKG","KBBW PEHR ENABLE",1,0,.error)
  do CHKTF^%ut('$$PehrEnabled)
  ;
- quit 
+ quit
  ;
 PehrEnabled() ; Is the PEHR enabled?
  ;
  quit $$GET^XPAR("ALL","KBBW PEHR ENABLE",1,"Q")
  ;
 UserSettings(requestDuz) ;
- ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
+ ;ven/arc;test;function;clean;silent;non-sac;non-recursive
  ;ven/arc;test/production;procedure/pseudo-function/function;clean/messy;silent/report/dialogue;sac/non-sac;recursive/non-recursive
- ;
- ; UserInfo(.info)
- ; RPC call for basic user/patient info
  ;
  if '$data(U) set U="^"
  ;
@@ -103,6 +100,19 @@ UserPatient(duz) ;
  set ptName=$$GET1^DIQ(2,dfn,.01)
  ;
  quit dfn_U_ptName
+ ;
+AddUser(newPerson,patient) ;
+ ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
+ ;
+ ; newPerson & patient must be strings -- external values
+ ; Returns a boolean value for success
+ ;
+ set record(11345001,"+1,",.01)=newPerson
+ set record(11345001,"+1,",.02)=patient
+ do UPDATE^DIE("E","record")
+ ;
+ quit:'$d(^TMP("DIERR",$J)) 1
+ quit:$d(^TMP("DIERR",$J)) 0
  ;
  ; The following sub-routines are not intended for use.
  ; They are intended to test and document DBS API calls.
