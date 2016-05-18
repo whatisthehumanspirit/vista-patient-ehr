@@ -132,15 +132,14 @@ AddAuthUser(person,authUser) ;
  ;
  new userIen
  set userIen=$$FIND1^DIC(11345001,,"B",person,,,)
+ ; Fail if the New Person isn't already a registered PEHR user
  quit:'userIen 0
  ;
- new authUserIen,duz
- set authUserIen=$$FIND1^DIC(11345001,,"B",authUser,,,)
- quit:'authUserIen 0
- set duz=$p(^KBBW(11345001,authUserIen,0),U,1)
+ ; Fail if the user to be authorized isn't already a registered PEHR user
+ quit:'$$FIND1^DIC(11345001,,"B",authUser,,,) 0
  ;
- set record(11345001.01,"+1,"_userIen_",",.01)=duz
- do UPDATE^DIE(,"record")
+ set record(11345001.01,"+1,"_userIen_",",.01)=authUser
+ do UPDATE^DIE("E","record")
  ;
  quit:'$d(^TMP("DIERR",$J)) 1
  quit:$d(^TMP("DIERR",$J)) 0
