@@ -92,6 +92,8 @@ UserPatient(duz) ;
  ;
  quit:'$g(duz) ""
  ;
+ if '$data(U) set U="^"
+ ;
  new ien,dfn,ptName
  set ien=+$o(^KBBW(11345001,"B",duz,0))
  ; dfn will be null if user doesn't have a record in KBBW PEHR User Settings
@@ -109,6 +111,8 @@ AddUser(person,patient) ;
  ; Parameters:
  ; newPerson & patient must be strings -- external values
  ;
+ if '$data(U) set U="^"
+ ;
  set record(11345001,"+1,",.01)=person
  set record(11345001,"+1,",.02)=patient
  do UPDATE^DIE("E","record")
@@ -124,6 +128,8 @@ AddAuthUser(person,authUser) ;
  ; Parameters:
  ; newPerson & newAuthUser must be strings -- external values
  ;
+ if '$data(U) set U="^"
+ ;
  new userIen
  set userIen=$$FIND1^DIC(11345001,,"B",person,,,)
  quit:'userIen 0
@@ -131,10 +137,15 @@ AddAuthUser(person,authUser) ;
  new authUserIen,duz
  set authUserIen=$$FIND1^DIC(11345001,,"B",authUser,,,)
  quit:'authUserIen 0
- set duz=$p(^KBBW(11345001,ien,0),U,2)
+ set duz=$p(^KBBW(11345001,ien,0),U,1)
  ;
  set record(11345001.01,"+1,"_userIen_",",.01)=duz
  do UPDATE^DIE(,"record")
+ ;
+ quit:'$d(^TMP("DIERR",$J)) 1
+ quit:$d(^TMP("DIERR",$J)) 0
+ ;
+ ;
  ;
  ; The following sub-routines are not intended for use.
  ; They are intended to test and document DBS API calls.
