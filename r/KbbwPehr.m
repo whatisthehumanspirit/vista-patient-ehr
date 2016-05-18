@@ -137,7 +137,7 @@ AddAuthUser(person,authUser) ;
  new authUserIen,duz
  set authUserIen=$$FIND1^DIC(11345001,,"B",authUser,,,)
  quit:'authUserIen 0
- set duz=$p(^KBBW(11345001,ien,0),U,1)
+ set duz=$p(^KBBW(11345001,authUserIen,0),U,1)
  ;
  set record(11345001.01,"+1,"_userIen_",",.01)=duz
  do UPDATE^DIE(,"record")
