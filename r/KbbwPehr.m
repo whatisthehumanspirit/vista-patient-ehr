@@ -62,7 +62,7 @@ UserSettings(requestDuz) ;
  ;
  ; Supply DUZ and user name
  new info
- set info=$p($g(^VA(200,workingDuz,0)),U)
+ set info=workingDUZ_U_$p($g(^VA(200,workingDuz,0)),U)
  ;
  ; Manually check for access to a security key
  ; Pointless in this context
@@ -88,7 +88,14 @@ UserSettings(requestDuz) ;
  quit info
  ;
 UserPatient(duz) ;
- ;ven/arc;test;function;clean;silent;non-sac;non-recursive
+ ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
+ ;
+ ; Parameters:
+ ; duz : integer
+ ;
+ ; Outputs:
+ ; Returns [DFN]^[patient name]
+ ; Sets U
  ;
  quit:'$g(duz) ""
  ;
@@ -104,15 +111,22 @@ UserPatient(duz) ;
  quit dfn_U_ptName
  ;
 AddUser(person,patient) ;
- ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
- ;
- ; Returns a boolean value for success
+ ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
  ;
  ; Parameters:
  ; newPerson & patient must be strings -- external values
  ;
+ ; Outputs:
+ ; Returns a boolean value for success
+ ; Sets U
+ ; Adds a record to file 11345001
+ ;
+ ; TODO: Make this an internal call and do the lookups myself on New Person and
+ ; patient to avoid problems with duplicate names.
+ ;
  if '$data(U) set U="^"
  ;
+ new record
  set record(11345001,"+1,",.01)=person
  set record(11345001,"+1,",.02)=patient
  do UPDATE^DIE("E","record")
@@ -121,12 +135,15 @@ AddUser(person,patient) ;
  quit:$d(^TMP("DIERR",$J)) 0
  ;
 AddAuthUser(person,authUser) ;
- ;ven/arc;test;pseudo-function;messy;silent;non-sac;non-recursive
- ;
- ; Returns a boolean value for success
+ ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
  ;
  ; Parameters:
  ; newPerson & newAuthUser must be strings -- external values
+ ;
+ ; Outputs:
+ ; Returns a boolean value for success
+ ; Sets U
+ ; Adds a record to subfile 1345001.01
  ;
  if '$data(U) set U="^"
  ;
@@ -138,12 +155,36 @@ AddAuthUser(person,authUser) ;
  ; Fail if the user to be authorized isn't already a registered PEHR user
  quit:'$$FIND1^DIC(11345001,,"B",authUser,,,) 0
  ;
+ new record
  set record(11345001.01,"+1,"_userIen_",",.01)=authUser
  do UPDATE^DIE("E","record")
  ;
  quit:'$d(^TMP("DIERR",$J)) 1
  quit:$d(^TMP("DIERR",$J)) 0
  ;
+DelUser(person,patient) ;
+ ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
+ ;
+ ; Parameters:
+ ; newPerson & patient must be strings -- external values
+ ;
+ ; Outputs:
+ ; Returns a boolean value for success
+ ; Sets U
+ ; Adds a record to file 11345001
+ ;
+ ; TODO: Make this an internal call and do the lookups myself on New Person and
+ ; patient to avoid problems with duplicate names.
+ ;
+ if '$data(U) set U="^"
+ ;
+ new record
+ set record(11345001,"+1,",.01)=person
+ set record(11345001,"+1,",.02)=patient
+ do UPDATE^DIE("E","record")
+ ;
+ quit:'$d(^TMP("DIERR",$J)) 1
+ quit:$d(^TMP("DIERR",$J)) 0
  ;
  ;
  ; The following sub-routines are not intended for use.
