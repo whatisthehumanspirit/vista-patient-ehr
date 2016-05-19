@@ -183,7 +183,7 @@ DelUser(user) ;
  kill error
  new record
  set record(11345001,userIen_",",.01)="@"
- do FILE^DIE(,"record",,"error")
+ do FILE^DIE(,"record","error")
  ;
  quit:'$d(error) 1
  quit:$d(error) 0
