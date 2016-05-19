@@ -114,7 +114,7 @@ AddUser(person,patient) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
  ;
  ; Parameters:
- ; newPerson & patient must be strings -- external values
+ ; person & patient must be strings -- external values
  ;
  ; Outputs:
  ; Returns a boolean value for success
@@ -134,11 +134,11 @@ AddUser(person,patient) ;
  quit:'$d(^TMP("DIERR",$J)) 1
  quit:$d(^TMP("DIERR",$J)) 0
  ;
-AddAuthUser(person,authUser) ;
+AddAuthUser(user,authUser) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
  ;
  ; Parameters:
- ; newPerson & newAuthUser must be strings -- external values
+ ; user & authUser must be strings -- external values
  ;
  ; Outputs:
  ; Returns a boolean value for success
@@ -148,7 +148,7 @@ AddAuthUser(person,authUser) ;
  if '$data(U) set U="^"
  ;
  new userIen
- set userIen=$$FIND1^DIC(11345001,,"B",person,,,)
+ set userIen=$$FIND1^DIC(11345001,,"B",user,,,)
  ; Fail if the New Person isn't already a registered PEHR user
  quit:'userIen 0
  ;
@@ -162,29 +162,33 @@ AddAuthUser(person,authUser) ;
  quit:'$d(^TMP("DIERR",$J)) 1
  quit:$d(^TMP("DIERR",$J)) 0
  ;
-DelUser(person,patient) ;
+DelUser(user) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
  ;
  ; Parameters:
- ; newPerson & patient must be strings -- external values
+ ; user : string -- user's name, from New Person file
  ;
  ; Outputs:
  ; Returns a boolean value for success
  ; Sets U
- ; Adds a record to file 11345001
- ;
- ; TODO: Make this an internal call and do the lookups myself on New Person and
- ; patient to avoid problems with duplicate names.
+ ; Deletes a record from file 11345001
  ;
  if '$data(U) set U="^"
  ;
- new record
- set record(11345001,"+1,",.01)=person
- set record(11345001,"+1,",.02)=patient
- do UPDATE^DIE("E","record")
+ new userIen
+ set userIen=$$FIND1^DIC(11345001,,"B",user,,,)
+ ; Fail if the New Person isn't already a registered PEHR user
+ quit:'userIen 0
  ;
- quit:'$d(^TMP("DIERR",$J)) 1
- quit:$d(^TMP("DIERR",$J)) 0
+ kill error
+ new record
+ set record(11345001,userIen_",",.01)="@"
+ do FILE^DIE(,"record",,"error")
+ ;
+ quit:'$d(error) 1
+ quit:$d(error) 0
+ ;
+ ;
  ;
  ;
  ; The following sub-routines are not intended for use.
@@ -216,6 +220,7 @@ UserAndPatient(ien)
  ;
 ListAllUsers
  ; Returns a list of all users sorted by name
+ kill error
  do LIST^DIC(11345001,,"@;.01;.02;.03","P",,,,,,,"users","error")
  ;
  quit
