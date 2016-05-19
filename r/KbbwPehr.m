@@ -62,7 +62,7 @@ UserSettings(requestDuz) ;
  ;
  ; Supply DUZ and user name
  new info
- set info=workingDUZ_U_$p($g(^VA(200,workingDuz,0)),U)
+ set info=workingDuz_U_$p($g(^VA(200,workingDuz,0)),U)
  ;
  ; Manually check for access to a security key
  ; Pointless in this context
@@ -78,7 +78,7 @@ UserSettings(requestDuz) ;
  ;
  ; If the PEHR service is active, return DFN and name of patient
  ; associated with the user and the default view
- if $p(info,U,2) do
+ if $p(info,U,3) do
  . set info=info_U_$$UserPatient(workingDuz)
  .;
  . new iens
