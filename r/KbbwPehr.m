@@ -188,6 +188,37 @@ DelUser(user) ;
  quit:'$d(error) 1
  quit:$d(error) 0
  ;
+DelAuthUser(user,authUser) ;
+ ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
+ ;
+ ; Parameters:
+ ; user : string -- user's name, from New Person file
+ ; authUser : string -- user's name, from New Person file
+ ;
+ ; Outputs:
+ ; Returns a boolean value for success
+ ; Sets U
+ ; Deletes a record from subfile 11345001.01
+ ;
+ if '$data(U) set U="^"
+ ;
+ new userIen,authUserIen
+ set userIen=$$FIND1^DIC(11345001,,"B",user,,,)
+ ; Fail if the New Person isn't already a registered PEHR user
+ quit:'userIen 0
+ set authUserIen=$$FIND1^DIC(11345001,,"B",authUser,,,)
+ ; Fail if the New Person isn't already a registered PEHR user
+ quit:'authUserIen 0
+ ; Find subfile IEN using DUZ
+ ;
+ kill error
+ new record
+ set record(11345001,authUserDuz_","_userIen_",",.01)="@"
+ do FILE^DIE(,"record","error")
+ ;
+ quit:'$d(error) 1
+ quit:$d(error) 0
+ ;
  ;
  ;
  ;
