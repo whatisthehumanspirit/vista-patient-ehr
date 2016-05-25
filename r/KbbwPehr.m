@@ -202,22 +202,22 @@ DelAuthUser(user,authUser) ;
  ;
  if '$data(U) set U="^"
  ;
- new userIen,authUserDuz
+ new userIen
  set userIen=$$FIND1^DIC(11345001,,"B",user,,,)
  ; Fail if the New Person isn't already a registered PEHR user
  quit:'userIen 0
- set authUserDuz=$$FIND1^DIC(200,,"B",authUser,,,)
+ ;
+ new authUserIen
+ set authUserIen=$$FIND1^DIC(11345001.01,","_userIen_",",,authUser,"GS",,)
  ; Fail if the New Person isn't already a registered PEHR user
- quit:'authUserDuz 0
- ; Find subfile IEN using DUZ
+ quit:'authUserIen 0
  ;
  kill error
  new record
- set record(11345001,authUserDuz_","_userIen_",",.01)="@"
+ set record(11345001,authUserIen_","_userIen_",",.01)="@"
  do FILE^DIE(,"record","error")
  ;
- quit:'$d(error) 1
- quit:$d(error) 0
+ quit '$d(error)
  ;
  ;
  ;
