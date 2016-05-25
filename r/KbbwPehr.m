@@ -188,6 +188,26 @@ DelUser(user) ;
  quit:'$d(error) 1
  quit:$d(error) 0
  ;
+DelUserDialog() ;
+ ;ven/arc;test;procedure;clean;dialogue;non-sac;non-recursive
+ ;
+ kill error
+ do LIST^DIC(11345001,,"@;.01;","P",,,,,,,"users","error")
+ ;
+ new i
+ set i=0
+ for  set i=$o(users("DILIST",i)) quit:'i  do
+ . write !,users("DILIST",i,0)
+ ;
+ new user
+ read !!,"Which user do you wish to delete (IEN)?" user:10
+ set user=+user
+ quit:'user 0
+ ;
+ write user
+ ;
+ quit 1
+ ;
 DelAuthUser(user,authUser) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
  ;
