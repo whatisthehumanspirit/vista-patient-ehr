@@ -197,16 +197,17 @@ DelUserDialog() ;
  new i
  set i=0
  for  set i=$o(users("DILIST",i)) quit:'i  do
- . write !,users("DILIST",i,0)
+ . write !,i,?1,$p(users("DILIST",i,0),"^",2)
  ;
- new user
- read !!,"Which user do you wish to delete (IEN)? ",user:10
- set user=+user
- quit:'user 0
+ new userIndex
+ read !!,"Which user do you wish to delete (IEN)? ",userIndex:10
+ set userIndex=+userIndex
+ quit:'userIndex 0
  ;
- write user
- ;
- quit 1
+ new userName
+ set userName=$p(users("DILIST",userIndex,0),"^",2)
+ quit:userName="" 0
+ quit $$DelUser(userName)
  ;
 DelAuthUser(user,authUser) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
