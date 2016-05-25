@@ -202,13 +202,13 @@ DelAuthUser(user,authUser) ;
  ;
  if '$data(U) set U="^"
  ;
- new userIen,authUserIen
+ new userIen,authUserDuz
  set userIen=$$FIND1^DIC(11345001,,"B",user,,,)
  ; Fail if the New Person isn't already a registered PEHR user
  quit:'userIen 0
- set authUserIen=$$FIND1^DIC(11345001,,"B",authUser,,,)
+ set authUserDuz=$$FIND1^DIC(200,,"B",authUser,,,)
  ; Fail if the New Person isn't already a registered PEHR user
- quit:'authUserIen 0
+ quit:'authUserDuz 0
  ; Find subfile IEN using DUZ
  ;
  kill error
