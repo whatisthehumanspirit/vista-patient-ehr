@@ -214,7 +214,7 @@ DelAuthUser(user,authUser) ;
  ;
  kill error
  new record
- set record(11345001,authUserIen_","_userIen_",",.01)="@"
+ set record(11345001.01,authUserIen_","_userIen_",",.01)="@"
  do FILE^DIE(,"record","error")
  ;
  quit '$d(error)
