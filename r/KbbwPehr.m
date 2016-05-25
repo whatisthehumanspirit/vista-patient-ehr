@@ -200,7 +200,7 @@ DelUserDialog() ;
  . write !,users("DILIST",i,0)
  ;
  new user
- read !!,"Which user do you wish to delete (IEN)?" user:10
+ read !!,"Which user do you wish to delete (IEN)? ",user:10
  set user=+user
  quit:'user 0
  ;
