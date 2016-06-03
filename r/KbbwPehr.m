@@ -197,7 +197,7 @@ DelUserDialog() ;
  new i
  set i=0
  for  set i=$o(users("DILIST",i)) quit:'i  do
- . write !,i,?1,$p(users("DILIST",i,0),"^",2)
+ . write !,i,?2,$p(users("DILIST",i,0),"^",2)
  ;
  new userIndex
  read !!,"Which user do you wish to delete (IEN)? ",userIndex:10
