@@ -124,15 +124,85 @@ AddUser(person,patient) ;
  ; TODO: Make this an internal call and do the lookups myself on New Person and
  ; patient to avoid problems with duplicate names.
  ;
- if '$data(U) set U="^"
+ set U="^"
  ;
- new record
+ new record,ien,error
  set record(11345001,"+1,",.01)=person
  set record(11345001,"+1,",.02)=patient
- do UPDATE^DIE("E","record")
+ do UPDATE^DIE("E","record","ien","error")
  ;
- quit:'$d(^TMP("DIERR",$J)) 1
- quit:$d(^TMP("DIERR",$J)) 0
+ quit:'$d(error) ien(1)
+ quit:$d(error) 0
+ ;
+AddUserDialog() ;
+ ;ven/arc;test;pseudo-function;clean;dialogue;non-sac;non-recursive
+ ;
+ ; Find potential users
+ new users,usersError
+ do LIST^DIC(200,,"@;.01;","P",,,,,,,"users","usersError")
+ quit:'$d(users) 0
+ ;
+ ; Remove special New Persons from the list
+ new i
+ set i=0
+ for  set i=$o(users("DILIST",i)) quit:'i  do
+ . if $p(users("DILIST",i,0),"^",1)<1  do
+ .. kill users("DILIST",i)
+ ;
+ ; Remove existing PEHR users from the list
+ set i=0
+ for  set i=$o(users("DILIST",i)) quit:'i  do
+ . if $d(^KBBW(11345001,"B",$p(users("DILIST",i,0),"^",1)))  do
+ .. kill users("DILIST",i)
+ ;
+ ; List New Persons who can be added
+ set i=0
+ for  set i=$o(users("DILIST",i)) quit:'i  do
+ . write !,$p(users("DILIST",i,0),"^",1),?4,$p(users("DILIST",i,0),"^",2)
+ write !!
+ ;
+ ; Select a New Person
+ new userIen
+ read !!,"Which user do you wish to add (IEN)? ",userIen:60
+ set userIen=+userIen
+ quit:'userIen 0
+ ;
+ new userName
+ set userName=$p(users("DILIST",userIen,0),"^",2)
+ quit:userName="" 0
+ ;
+ write !!
+ ;
+ ; Find potential patients
+ new patients,patientsError
+ do LIST^DIC(2,,"@;.01;","P",,,,,,,"patients","patientsError")
+ quit:'$d(patients) 0
+ ;
+ ; Remove existing PEHR patients from the list
+ set i=0
+ for  set i=$o(patients("DILIST",i)) quit:'i  do
+ . if $d(^KBBW(11345001,"C",$p(patients("DILIST",i,0),"^",1)))  do
+ .. kill patients("DILIST",i)
+ ;
+ ; Print Patients who can be added
+ set i=0
+ for  set i=$o(patients("DILIST",i)) quit:'i  do
+ . write !,$p(patients("DILIST",i,0),"^",1),?4,$p(patients("DILIST",i,0),"^",2)
+ ;
+ ; Select a Patient
+ new patientIen
+ read !!,"Which patient do you wish to add (IEN)? ",patientIen:60
+ set patientIen=+patientIen
+ quit:'patientIen 0
+ ;
+ new patientName
+ set patientName=$p(patients("DILIST",patientIen,0),"^",2)
+ quit:patientName="" 0
+ ;
+ write !!
+ ;
+ ;
+ quit $$AddUser(userName,patientName)
  ;
 AddAuthUser(user,authUser) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
@@ -155,12 +225,12 @@ AddAuthUser(user,authUser) ;
  ; Fail if the user to be authorized isn't already a registered PEHR user
  quit:'$$FIND1^DIC(11345001,,"B",authUser,,,) 0
  ;
- new record
+ new record,ien,error
  set record(11345001.01,"+1,"_userIen_",",.01)=authUser
- do UPDATE^DIE("E","record")
+ do UPDATE^DIE("E","record","ien","error")
  ;
- quit:'$d(^TMP("DIERR",$J)) 1
- quit:$d(^TMP("DIERR",$J)) 0
+ quit:'$d(error) ien(1)
+ quit:$d(error) 0
  ;
 DelUser(user) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
@@ -189,7 +259,7 @@ DelUser(user) ;
  quit:$d(error) 0
  ;
 DelUserDialog() ;
- ;ven/arc;test;procedure;clean;dialogue;non-sac;non-recursive
+ ;ven/arc;test;pseudo-function;clean;dialogue;non-sac;non-recursive
  ;
  kill error
  do LIST^DIC(11345001,,"@;.01;","P",,,,,,,"users","error")
@@ -200,7 +270,7 @@ DelUserDialog() ;
  . write !,i,?2,$p(users("DILIST",i,0),"^",2)
  ;
  new userIndex
- read !!,"Which user do you wish to delete (IEN)? ",userIndex:10
+ read !!,"Which user do you wish to delete (IEN)? ",userIndex:15
  set userIndex=+userIndex
  quit:'userIndex 0
  ;
@@ -272,7 +342,7 @@ UserAndPatient(ien)
  ;
 ListAllUsers
  ; Returns a list of all users sorted by name
- kill error
+ kill users,error
  do LIST^DIC(11345001,,"@;.01;.02;.03","P",,,,,,,"users","error")
  ;
  quit
