@@ -156,22 +156,21 @@ AddUserDialog() ;
  .. kill users("DILIST",i)
  ;
  ; List New Persons who can be added
+ write !,"DUZ",?4,"New Person",!
  set i=0
  for  set i=$o(users("DILIST",i)) quit:'i  do
  . write !,$p(users("DILIST",i,0),"^",1),?4,$p(users("DILIST",i,0),"^",2)
- write !!
  ;
  ; Select a New Person
  new userIen
- read !!,"Which user do you wish to add (IEN)? ",userIen:60
+ read !!,"Which user do you wish to add (DUZ)? ",userIen:60
+ write !!
  set userIen=+userIen
  quit:'userIen 0
  ;
  new userName
- set userName=$p(users("DILIST",userIen,0),"^",2)
+ set userName=$$GET1^DIQ(200,userIen_",",.01)
  quit:userName="" 0
- ;
- write !!
  ;
  ; Find potential patients
  new patients,patientsError
@@ -185,22 +184,20 @@ AddUserDialog() ;
  .. kill patients("DILIST",i)
  ;
  ; Print Patients who can be added
+ write !,"DFN",?4,"Patient",!
  set i=0
  for  set i=$o(patients("DILIST",i)) quit:'i  do
  . write !,$p(patients("DILIST",i,0),"^",1),?4,$p(patients("DILIST",i,0),"^",2)
  ;
  ; Select a Patient
  new patientIen
- read !!,"Which patient do you wish to add (IEN)? ",patientIen:60
+ read !!,"Which patient do you wish to add (DFN)? ",patientIen:60
  set patientIen=+patientIen
  quit:'patientIen 0
  ;
  new patientName
- set patientName=$p(patients("DILIST",patientIen,0),"^",2)
+ set patientName=$$GET1^DIQ(2,patientIen_",",.01)
  quit:patientName="" 0
- ;
- write !!
- ;
  ;
  quit $$AddUser(userName,patientName)
  ;
