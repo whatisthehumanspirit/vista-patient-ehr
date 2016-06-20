@@ -113,20 +113,23 @@ UserPatient(duz) ;
 AddUser(person,patient) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
  ;
- ; Parameters:
+ ; Inputs:
  ; person & patient must be strings -- external values
  ;
  ; Outputs:
- ; Returns a boolean value for success
+ ; Returns a record number on success and 0 (out-of-band value) on failure
  ; Sets U
  ; Adds a record to file 11345001
  ;
  ; TODO: Make this an internal call and do the lookups myself on New Person and
  ; patient to avoid problems with duplicate names.
  ;
+ ; Constraint: This will currently only work on a system with unique New Person
+ ; and Patient names.
+ ;
  set U="^"
  ;
- new record,ien,error
+ new record,ien,error,DIERR
  set record(11345001,"+1,",.01)=person
  set record(11345001,"+1,",.02)=patient
  do UPDATE^DIE("E","record","ien","error")
@@ -148,12 +151,16 @@ AddUserDialog() ;
  for  set i=$o(users("DILIST",i)) quit:'i  do
  . if $p(users("DILIST",i,0),"^",1)<1  do
  .. kill users("DILIST",i)
+ .. quit
+ . quit
  ;
  ; Remove existing PEHR users from the list
  set i=0
  for  set i=$o(users("DILIST",i)) quit:'i  do
  . if $d(^KBBW(11345001,"B",$p(users("DILIST",i,0),"^",1)))  do
  .. kill users("DILIST",i)
+ .. quit
+ . quit
  ;
  ; List New Persons who can be added
  write !,"DUZ",?4,"New Person",!
@@ -204,7 +211,7 @@ AddUserDialog() ;
 AddAuthUser(user,authUser) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
  ;
- ; Parameters:
+ ; Inputs:
  ; user & authUser must be strings -- external values
  ;
  ; Outputs:
