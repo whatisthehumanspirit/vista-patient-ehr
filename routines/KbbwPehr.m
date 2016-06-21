@@ -3,7 +3,7 @@ KbbwPehr ; VEN/ARC - Patient EHR: RPC 1 ; 2016-04-14 10:27
  ;;App ver;App name;Patch #s w changes to routine;App release date;KIDS build #?
  ;
  ; Unit tests require that the parameter KBBW PEHR ENABLE exists
- if $t(EN^%ut)'="" do EN^%ut("KbbwPehr",2)
+ if $text(EN^%ut)'="" do EN^%ut("KbbwPehr",2)
  quit
  ;
 STARTUP ; Runs once per routine
@@ -52,12 +52,12 @@ PehrEnabled() ; Is the PEHR enabled?
  ;
 UserSettings(requestDuz) ;
  ;ven/arc;test;function;clean;silent;non-sac;non-recursive
- ;ven/arc;test/production;procedure/pseudo-function/function;clean/messy;silent/report/dialogue;sac/non-sac;recursive/non-recursive
+ ;ven/arc;test/production;procedure/pseudo-function/function;clean/messy;silent/report/dialog;sac/non-sac;recursive/non-recursive
  ;
- if '$data(U) set U="^"
+ set U="^"
  ;
  new workingDuz
- set workingDuz=$s($g(requestDuz):requestDuz,$g(DUZ):DUZ,1:0)
+ set workingDuz=$select($get(requestDuz):requestDuz,$get(DUZ):DUZ,1:0)
  quit:'workingDuz "DUZ not set or specified"
  ;
  ; Supply DUZ and user name
@@ -134,11 +134,10 @@ AddUser(person,patient) ;
  set record(11345001,"+1,",.02)=patient
  do UPDATE^DIE("E","record","ien","error")
  ;
- quit:'$d(error) ien(1)
- quit:$d(error) 0
+ quit $get(ien(1),0)
  ;
 AddUserDialog() ;
- ;ven/arc;test;pseudo-function;clean;dialogue;non-sac;non-recursive
+ ;ven/arc;test;pseudo-function;clean;dialog;non-sac;non-recursive
  ;
  ; Find potential users
  new users,usersError
@@ -206,6 +205,8 @@ AddUserDialog() ;
  set patientName=$$GET1^DIQ(2,patientIen_",",.01)
  quit:patientName="" 0
  ;
+ write !!
+ ;
  quit $$AddUser(userName,patientName)
  ;
 AddAuthUser(user,authUser) ;
@@ -248,7 +249,7 @@ DelUser(user) ;
  ; Deletes a record from file 11345001
  ;
  new userIen
- set userIen=$$FIND1^DIC(11345001,,"B",user,,,)
+ set userIen=$$FIND1^DIC(11345001,,"B",user)
  ; Fail if the New Person isn't already a registered PEHR user
  quit:'userIen 0
  ;
@@ -260,24 +261,33 @@ DelUser(user) ;
  quit '$data(error)
  ;
 DelUserDialog() ;
- ;ven/arc;test;pseudo-function;clean;dialogue;non-sac;non-recursive
+ ;ven/arc;test;pseudo-function;clean;dialog;non-sac;non-recursive
  ;
- kill error
+ ;new error
+ kill error ; in debugging mode
  do LIST^DIC(11345001,,"@;.01;","P",,,,,,,"users","error")
  ;
+ write !!,"IEN",?4,"User Name",!
  new i
  set i=0
  for  set i=$o(users("DILIST",i)) quit:'i  do
- . write !,i,?2,$p(users("DILIST",i,0),"^",2)
+ . write !,$p(users("DILIST",i,0),"^",1),?4,$p(users("DILIST",i,0),"^",2)
  ;
- new userIndex
- read !!,"Which user do you wish to delete (IEN)? ",userIndex:15
- set userIndex=+userIndex
- quit:'userIndex 0
+ new userIen
+ read !!,"Which user do you wish to delete (IEN)? ",userIen:60
+ set userIen=+userIen
+ quit:'userIen 0
  ;
  new userName
- set userName=$p(users("DILIST",userIndex,0),"^",2)
+ set userName=$$GET1^DIQ(2,userIen_",",.01)
  quit:userName="" 0
+ ;
+ write !!
+ ;
+ ; Convert this subroutine to a procedure since it won't be called from the 
+ ; web app and is only intended for use by a system admin via direct mode
+ ; or command line.
+ ;
  quit $$DelUser(userName)
  ;
 DelAuthUser(user,authUser) ;
@@ -292,10 +302,10 @@ DelAuthUser(user,authUser) ;
  ; Sets U
  ; Deletes a record from subfile 11345001.01
  ;
- if '$data(U) set U="^"
+ set U="^"
  ;
  new userIen
- set userIen=$$FIND1^DIC(11345001,,"B",user,,,)
+ set userIen=$$FIND1^DIC(11345001,,"B",user)
  ; Fail if the New Person isn't already a registered PEHR user
  quit:'userIen 0
  ;
