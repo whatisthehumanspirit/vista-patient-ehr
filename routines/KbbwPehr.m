@@ -214,27 +214,27 @@ AddAuthUser(user,authUser) ;
  ; Inputs:
  ; user & authUser must be strings -- external values
  ;
+ ; Throughputs:
+ ; None for this routine. This is a temporary note.
+ ;
  ; Outputs:
- ; Returns a boolean value for success
+ ; Returns a record number on success and 0 (out-of-band value) on failure
  ; Sets U
  ; Adds a record to subfile 1345001.01
  ;
- if '$data(U) set U="^"
- ;
  new userIen
- set userIen=$$FIND1^DIC(11345001,,"B",user,,,)
+ set userIen=$$FIND1^DIC(11345001,,"B",user)
  ; Fail if the New Person isn't already a registered PEHR user
  quit:'userIen 0
  ;
  ; Fail if the user to be authorized isn't already a registered PEHR user
- quit:'$$FIND1^DIC(11345001,,"B",authUser,,,) 0
+ quit:'$$FIND1^DIC(11345001,,"B",authUser) 0
  ;
  new record,ien,error
  set record(11345001.01,"+1,"_userIen_",",.01)=authUser
  do UPDATE^DIE("E","record","ien","error")
  ;
- quit:'$d(error) ien(1)
- quit:$d(error) 0
+ quit $get(ien(1),0)
  ;
 DelUser(user) ;
  ;ven/arc;test;pseudo-function;clean;silent;non-sac;non-recursive
@@ -243,11 +243,9 @@ DelUser(user) ;
  ; user : string -- user's name, from New Person file
  ;
  ; Outputs:
- ; Returns a boolean value for success
+ ; Returns a record number on success and 0 (out-of-band value) on failure
  ; Sets U
  ; Deletes a record from file 11345001
- ;
- if '$data(U) set U="^"
  ;
  new userIen
  set userIen=$$FIND1^DIC(11345001,,"B",user,,,)
@@ -259,8 +257,7 @@ DelUser(user) ;
  set record(11345001,userIen_",",.01)="@"
  do FILE^DIE(,"record","error")
  ;
- quit:'$d(error) 1
- quit:$d(error) 0
+ quit '$data(error)
  ;
 DelUserDialog() ;
  ;ven/arc;test;pseudo-function;clean;dialogue;non-sac;non-recursive
