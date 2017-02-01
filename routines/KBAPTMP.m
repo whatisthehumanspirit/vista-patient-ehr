@@ -1,6 +1,33 @@
 KBAPTMP ; VEN/ARC&POO - Cross references ; 2/25/16 3:42pm
  ;;1.0;;
  ;
+ ; Refactored to instruct and pass XINDEX
+ ; VARIABLES
+ ;    SCHDDT  = DateTime to run scheduled event ( $h in seconds)
+ ;    TASKIEN = Task Number
+ ;    LSTUPDT = Last update to $h for task for today
+ ;    TSKDESC =  Task description 
+ ;    TSKERTN = Task entry linetag and routine
+ ; Enter:
+ ;    nothing
+ ; Exit:
+ ;    array of tasks scheduled for today
+ ;   XTASKS(task number,description or entrypoint and routine)=""
+TDAYTSK(XTASKS) ; Return array of today's tasks
+ K POO
+ N SCHDDT,TASKIEN,LSTUPDT,TSKDESC,TSKERTN
+ S SCHDDT=0
+ F  S SCHDDT=$O(^%ZTSCH(SCHDDT)) Q:'SCHDDT  D
+ . S TASKIEN=$O(^%ZTSCH(SCHDDT,""))
+ . Q:'$D(^%ZTSK(TASKIEN))
+ . S LSTUPDT=$P(^%ZTSK(TASKIEN,.1),"^",2)
+ . I +LSTUPDT=+$H D
+ .. S TSKDESC=$G(^%ZTSK(TKSIEN,.03))
+ .. S TSKERTN=$P(^%ZTSK(TASKIEN,0),"^",1,2)
+ .. S XTASKS(TASKIEN,$S(TSKDESC'="":TSKDESC,1:TSKERTN))=""
+ Q
+ ;
+ ;
  ; ENTER
  ;  USRAUTH  = IEN in 200 authorizing person
  ;  USRALLOW = IEN in 11312001 person being 
